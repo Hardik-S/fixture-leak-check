@@ -1,0 +1,4 @@
+{"case":"clear","note":"synthetic ordinary text only"}
+{"case":"email","note":"synthetic.user@example.test"}
+{"case":"payment-test","number":"4242 4242 4242 4242"}
+{"case":"token","value":"sk-SYNTHETIC_MARKER_123456"}
