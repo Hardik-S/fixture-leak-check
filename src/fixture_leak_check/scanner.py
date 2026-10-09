@@ -38,15 +38,14 @@ def scan_text(text: str) -> list[dict]:
     """Return line/kind findings for supported patterns, without matched values."""
     findings: set[tuple[int, str]] = set()
 
-    for kind, pattern in (("email", _EMAIL), ("api_token", _API_TOKEN)):
-        for match in pattern.finditer(text):
-            line = text.count("\n", 0, match.start()) + 1
-            findings.add((line, kind))
+    for line_number, line_text in enumerate(text.splitlines(), start=1):
+        for kind, pattern in (("email", _EMAIL), ("api_token", _API_TOKEN)):
+            if pattern.search(line_text):
+                findings.add((line_number, kind))
 
-    for match in _PAYMENT_CARD.finditer(text):
-        digits = match.group().replace(" ", "").replace("-", "")
-        if 13 <= len(digits) <= 19 and _passes_luhn(digits):
-            line = text.count("\n", 0, match.start()) + 1
-            findings.add((line, "payment_card"))
+        for match in _PAYMENT_CARD.finditer(line_text):
+            digits = match.group().replace(" ", "").replace("-", "")
+            if 13 <= len(digits) <= 19 and _passes_luhn(digits):
+                findings.add((line_number, "payment_card"))
 
     return [{"line": line, "kind": kind} for line, kind in sorted(findings)]
